@@ -1,0 +1,6 @@
+name: pi3
+version: 16.04-0.1
+summary: Raspberry Pi 3 support package
+description: |
+ Support files for booting Raspberry Pi
+type: gadget
