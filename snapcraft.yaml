@@ -1,0 +1,19 @@
+name: pi3
+version: 16.04-0.5
+summary: Raspberry Pi 3 support package
+description: |
+ Support files for booting Raspberry Pi
+type: gadget
+architectures:
+  - armhf
+confinement: strict
+grade: stable
+parts:
+    prebuilt:
+        plugin: dump
+        source: prebuilt
+    licenses:
+        plugin: copy
+        files:
+            COPYING.linux: .
+            LICENCE.broadcom: .
