@@ -53,3 +53,4 @@ dtparam=pwr_led_trigger=mmc0
 
 device_tree_address=0x02000000
 core_freq=250
+enable_uart=1
