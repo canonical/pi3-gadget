@@ -23,6 +23,18 @@ To build the gadget snap locally please use `snapcraft`. This repository will
 be soon updated to support snapcraft natively, via a `snapcraft.yaml` file,
 stay tuned!
 
+In case you need to rebuild u-boot, the steps are
+
+```
+sudo apt install gcc-arm-linux-gnueabi
+export CROSS_COMPILE=arm-linux-gnueabi-
+git clone git://git.denx.de/u-boot.git
+cd u-boot; git checkout v2017.01-rc1
+git apply <gadget-folder>/prebuilt/uboot.patch
+make rpi_3_32b_defconfig
+make -j8
+```
+
 ## Launchpad Mirror and Automatic Builds.
 
 All commits from the master branch of https://github.com/snapcore/pi3 are
