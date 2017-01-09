@@ -1,7 +1,7 @@
 # Raspberry Pi 3 Gadget Snap
 
 This repository contains the official Ubuntu Core gadget snap for the Raspberry
-Pi 2.
+Pi 3.
 
 ## Gadget Snaps
 
