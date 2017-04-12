@@ -35,6 +35,12 @@ make rpi_3_32b_defconfig
 make -j8
 ```
 
+Building the uboot environment
+
+```
+mkenvimage -r -s 131072  -o uboot.env uboot.env.in
+```
+
 ## Launchpad Mirror and Automatic Builds.
 
 All commits from the master branch of https://github.com/snapcore/pi3 are
@@ -46,11 +52,3 @@ published into the snap store to the edge channel.
 
 You can find build history and other controls here:
 https://code.launchpad.net/~canonical-foundations/+snap/pi3
-
-## Old content
-
-This used to be in the old README file, it will be phased out over time
-
-```
-mkenvimage -r -s 131072  -o uboot.env uboot.env.in
-```
