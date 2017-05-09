@@ -90,7 +90,7 @@ slots:
   bcm-gpio-26:
     interface: gpio
     number: 26
-  pi-bluetooth:
+  bt-serial:
     interface: serial-port
     path: /dev/ttyAMA0
 
