@@ -105,6 +105,12 @@ slots:
   bt-serial:
     interface: serial-port
     path: /dev/ttyAMA0
+  spidev0.0:
+     interface: spi
+     path: /dev/spidev0.0
+  spidev0.1:
+     interface: spi
+     path: /dev/spidev0.1
 
 grade: stable
 parts:
