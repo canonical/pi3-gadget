@@ -46,6 +46,7 @@ kernel=uboot.bin
 
 dtparam=i2c_arm=on
 dtparam=i2c_vc=on
+#maybe run "sudo modprobe spi-bcm2835" to load kernel modules 
 dtparam=spi=on
 #i2s=on
 #spi=on
