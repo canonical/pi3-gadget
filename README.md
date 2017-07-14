@@ -1,7 +1,17 @@
 # Raspberry Pi 3 Gadget Snap
 
-This repository contains the official Ubuntu Core gadget snap for the Raspberry
-Pi 3.
+This repository contains the source for an Ubuntu Core gadget snap for the Raspberry Pi 3.
+
+Building it with snapcraft will automatically pull, configure, patch and build
+the git.denx.de/u-boot.git upstream source for rpi_3_32b_defconfig at release v2017.05,
+produce a u-boot.bin binary and put it inside the gadget.
+
+It will then download the latest stable binary boot firmware
+from https://github.com/raspberrypi/firmware/tree/stable/boot and add it to the gadget.
+
+Last it will pull the latest linux-image-raspi2 from the xenial-updates archive, extract the
+devicetree and overlay files from it and add them to the gadget as well.
+
 
 ## Gadget Snaps
 
@@ -19,27 +29,10 @@ projects better than what is available with Github issues.
 
 ## Building
 
-To build the gadget snap locally please use `snapcraft`. This repository will
-be soon updated to support snapcraft natively, via a `snapcraft.yaml` file,
-stay tuned!
+To build the gadget snap locally on an armhf system please use `snapcraft`.
 
-In case you need to rebuild u-boot, the steps are
-
-```
-sudo apt install gcc-arm-linux-gnueabi
-export CROSS_COMPILE=arm-linux-gnueabi-
-git clone git://git.denx.de/u-boot.git
-cd u-boot; git checkout v2017.01-rc1
-git apply <gadget-folder>/prebuilt/uboot.patch
-make rpi_3_32b_defconfig
-make -j8
-```
-
-Building the uboot environment
-
-```
-mkenvimage -r -s 131072  -o uboot.env uboot.env.in
-```
+To cross build this gadget snap on a PC please install the gcc-arm-linux-gnueabihf package
+before running `snapcraft`
 
 ## Launchpad Mirror and Automatic Builds.
 
