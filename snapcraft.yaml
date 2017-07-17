@@ -30,7 +30,7 @@ parts:
       mkdir -p $SNAPCRAFT_PART_INSTALL/boot-assets
       cp u-boot.bin $SNAPCRAFT_PART_INSTALL/boot-assets/uboot.bin
       tools/mkenvimage -r -s 131072 -o $SNAPCRAFT_PART_INSTALL/boot-assets/uboot.env ../../../uboot.env.in
-      cd $SNAPCRAFT_PART_INSTALL/boot-assets; ln -s uboot.env uboot.conf
+      ln -s uboot.env $SNAPCRAFT_PART_INSTALL/boot-assets/uboot.conf
     build-packages:
       - bc
       - build-essential
@@ -43,13 +43,12 @@ parts:
     after:
       - uboot
     prepare: |
-      git clone --depth=1 https://github.com/raspberrypi/firmware.git -b stable
+      git clone --depth=1 https://github.com/raspberrypi/firmware.git -b "1.20170515"
     install: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/boot-assets
       for file in fixup start bootcode LICENCE COPYING; do
         cp firmware/boot/${file}* $SNAPCRAFT_PART_INSTALL/boot-assets
       done
-      rm -rf firmware
   configs:
     plugin: dump
     source: configs
