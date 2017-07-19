@@ -29,8 +29,8 @@ parts:
     install: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/boot-assets
       cp u-boot.bin $SNAPCRAFT_PART_INSTALL/boot-assets/uboot.bin
-      tools/mkenvimage -r -s 131072 -o $SNAPCRAFT_PART_INSTALL/boot-assets/uboot.env ../../../uboot.env.in
-      ln -s uboot.env $SNAPCRAFT_PART_INSTALL/boot-assets/uboot.conf
+      tools/mkenvimage -r -s 131072 -o $SNAPCRAFT_PART_INSTALL/uboot.env ../../../uboot.env.in
+      ln -s uboot.env $SNAPCRAFT_PART_INSTALL/uboot.conf
     build-packages:
       - bc
       - build-essential
