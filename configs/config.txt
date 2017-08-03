@@ -47,7 +47,7 @@ kernel=uboot.bin
 dtparam=i2c_arm=on
 dtparam=i2c_vc=on
 #i2s=on
-#spi=on
+dtparam=spi=on
 dtparam=act_led_trigger=heartbeat
 dtparam=pwr_led_trigger=mmc0
 dtparam=audio=on
