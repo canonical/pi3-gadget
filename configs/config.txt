@@ -49,7 +49,7 @@ dtparam=i2c_vc=on
 #maybe run "sudo modprobe spi-bcm2835" to load kernel modules 
 dtparam=spi=on
 #i2s=on
-#spi=on
+dtparam=spi=on
 dtparam=act_led_trigger=heartbeat
 dtparam=pwr_led_trigger=mmc0
 dtparam=audio=on
