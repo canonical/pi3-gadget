@@ -56,4 +56,4 @@ device_tree_address=0x02000000
 core_freq=250
 enable_uart=1
 
-dtoverlay=vc4-kms-v3d
+#dtoverlay=vc4-kms-v3d
