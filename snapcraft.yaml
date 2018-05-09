@@ -181,3 +181,6 @@ slots:
   spidev0-1:
      interface: spi
      path: /dev/spidev0.1
+  rtc0:
+     interface: rtc
+     path: /dev/rtc0
