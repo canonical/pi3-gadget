@@ -17,6 +17,7 @@ parts:
       git apply ../../../uboot.patch
       make rpi_3_32b_defconfig
     build: |
+      if [ "$(arch)" = "x86_64" ]; then
         CROSS_COMPILE=arm-linux-gnueabihf- make
       else
         make
