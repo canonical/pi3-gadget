@@ -9,57 +9,9 @@ architectures:
 confinement: strict
 grade: stable
 parts:
-  uboot:
-    plugin: nil
-    stage-packages:
-      - u-boot-rpi:armhf
-    build-packages:
-      - u-boot-tools
-    prime:
-      - boot-assets
-      - uboot.*
-    install: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/boot-assets
-      cp $SNAPCRAFT_PART_INSTALL/usr/lib/u-boot/rpi_3_32b/u-boot.bin $SNAPCRAFT_PART_INSTALL/boot-assets/uboot.bin
-      mkenvimage -r -s 131072 -o $SNAPCRAFT_PART_INSTALL/uboot.env uboot.env.in
-      ln -s uboot.env $SNAPCRAFT_PART_INSTALL/uboot.conf
-  boot-firmware:
-    plugin: nil
-    after:
-      - uboot
-    stage-packages:
-      - raspi3-firmware:armhf
-    prime: [ boot-assets ]
-    install: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/boot-assets
-      for file in fixup start bootcode; do
-        cp $SNAPCRAFT_PART_INSTALL/usr/lib/raspi3-firmware/${file}* $SNAPCRAFT_PART_INSTALL/boot-assets
-      done
-  configs:
-    plugin: dump
-    source: configs
-    after:
-      - boot-firmware
-    organize:
-      config.txt: boot-assets/config.txt
-      cmdline.txt: boot-assets/cmdline.txt
-  devicetrees:
-    plugin: nil
+  gadget:
     source: .
-    after:
-      - configs
-    prepare: |
-      PACKAGES="http://ports.ubuntu.com/ubuntu-ports/dists/bionic-updates/universe/binary-armhf/Packages.gz"
-      PKGPATH="$(wget -q -O- $PACKAGES|zcat|grep-dctrl linux-raspi2 |\
-        grep linux-modules|grep Filename|tail -1| sed 's/^Filename: //')"
-      wget http://ports.ubuntu.com/ubuntu-ports/$PKGPATH
-      dpkg -x $(basename $PKGPATH) unpack/
-    install: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/boot-assets
-      cp -a unpack/lib/firmware/*/device-tree/* $SNAPCRAFT_PART_INSTALL/boot-assets
-      rm -rf unpack
-    build-packages:
-      - coreutils
-      - dctrl-tools
-      - sed
-      - wget
+    plugin: make
+    prime:
+      - boot-assets/*
+      - uboot*

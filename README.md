@@ -24,10 +24,10 @@ projects better than what is available with Github issues.
 
 ## Building
 
-To build the gadget snap locally on an armhf system please use `snapcraft`.
+To build the gadget tree locally on an armhf system please use `snapcraft prime`.
 
-To cross build this gadget snap on a PC please install the gcc-arm-linux-gnueabihf package
-before running `snapcraft`
+To cross build this gadget tree on a PC please install the gcc-arm-linux-gnueabihf package
+before running `snapcraft prime`
 
 ## Launchpad Mirror and Automatic Builds.
 
