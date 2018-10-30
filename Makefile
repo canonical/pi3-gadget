@@ -15,19 +15,18 @@ all: clean
 	mkdir -p $(STAGEDIR)/debs $(STAGEDIR)/unpack
 	# u-boot
 	$(call stage_package,u-boot-rpi,$(STAGEDIR))
-	#mkenvimage -r -s 131072 -o $(STAGEDIR)/uboot.env uboot.env.in
+	mkenvimage -r -s 131072 -o $(STAGEDIR)/uboot.env uboot.env.in
 	# boot-firmware
 	$(call stage_package,raspi3-firmware,$(STAGEDIR))
 	# devicetrees
 	wget http://ports.ubuntu.com/ubuntu-ports/$(DEVTREES_PKGPATH) -P $(STAGEDIR)/debs
 	dpkg -x $(STAGEDIR)/debs/$$(basename $(DEVTREES_PKGPATH)) $(STAGEDIR)/unpack/
 
-
 install:
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
 	cp $(STAGEDIR)/unpack/usr/lib/u-boot/rpi_3_32b/u-boot.bin $(DESTDIR)/boot-assets/
-	#cp $(STAGEDIR)/uboot.env $(DESTDIR)
+	cp $(STAGEDIR)/uboot.env $(DESTDIR)
 	ln -s uboot.env $(DESTDIR)/uboot.conf
 	# boot-firmware
 	for file in fixup start bootcode; do \
