@@ -12,6 +12,7 @@ endef
 
 
 all: clean
+	# Preparation stage
 	mkdir -p $(STAGEDIR)/debs $(STAGEDIR)/unpack
 	# u-boot
 	$(call stage_package,u-boot-rpi,$(STAGEDIR))
@@ -21,8 +22,7 @@ all: clean
 	# devicetrees
 	wget http://ports.ubuntu.com/ubuntu-ports/$(DEVTREES_PKGPATH) -P $(STAGEDIR)/debs
 	dpkg -x $(STAGEDIR)/debs/$$(basename $(DEVTREES_PKGPATH)) $(STAGEDIR)/unpack/
-
-install:
+	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
 	cp $(STAGEDIR)/unpack/usr/lib/u-boot/rpi_3_32b/u-boot.bin $(DESTDIR)/boot-assets/
@@ -34,7 +34,6 @@ install:
 	done
 	# devicetrees
 	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/* $(DESTDIR)/boot-assets
-
 	# configs
 	cp configs/config.txt configs/cmdline.txt $(DESTDIR)/boot-assets/
 	# gadget.yaml
