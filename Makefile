@@ -1,7 +1,17 @@
 STAGEDIR := "$(CURDIR)/stage"
 DESTDIR := "$(CURDIR)/install"
 
-DEVTREES_PACKAGES := "http://ports.ubuntu.com/ubuntu-ports/dists/bionic-updates/universe/binary-armhf/Packages.gz"
+ARCH ?= "armhf"
+SERIES ?= "bionic"
+ifeq ($(ARCH),arm64)
+	UBOOT_TARGET := "rpi_3"
+else
+	UBOOT_TARGET := "rpi_3_32b"
+endif
+
+# XXX: because of legacy reasons this is done this way but most probably we
+#  can just use the stage_package call to get the right binaries.
+DEVTREES_PACKAGES := "http://ports.ubuntu.com/ubuntu-ports/dists/$(SERIES)-updates/universe/binary-$(ARCH)/Packages.gz"
 DEVTREES_PKGPATH := $(shell wget -q -O- $(DEVTREES_PACKAGES)|zcat|grep-dctrl linux-raspi2|grep linux-modules|grep Filename|tail -1| sed 's/^Filename: //')
 
 
@@ -16,7 +26,11 @@ all: clean
 	mkdir -p $(STAGEDIR)/debs $(STAGEDIR)/unpack
 	# u-boot
 	$(call stage_package,u-boot-rpi,$(STAGEDIR))
-	mkenvimage -r -s 131072 -o $(STAGEDIR)/uboot.env uboot.env.in
+	cp uboot.env.in $(STAGEDIR)/uboot.env.in
+ifeq ($(ARCH),arm64)
+	sed -i s/bootz/booti/ $(STAGEDIR)/uboot.env.in
+endif
+	mkenvimage -r -s 131072 -o $(STAGEDIR)/uboot.env $(STAGEDIR)/uboot.env.in
 	# boot-firmware
 	$(call stage_package,raspi3-firmware,$(STAGEDIR))
 	# devicetrees
@@ -25,7 +39,7 @@ all: clean
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
-	cp $(STAGEDIR)/unpack/usr/lib/u-boot/rpi_3_32b/u-boot.bin $(DESTDIR)/boot-assets/
+	cp $(STAGEDIR)/unpack/usr/lib/u-boot/$(UBOOT_TARGET)/u-boot.bin $(DESTDIR)/boot-assets/
 	cp $(STAGEDIR)/uboot.env $(DESTDIR)
 	ln -s uboot.env $(DESTDIR)/uboot.conf
 	# boot-firmware
