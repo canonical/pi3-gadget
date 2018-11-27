@@ -5,8 +5,10 @@ ARCH ?= "armhf"
 SERIES ?= "bionic"
 ifeq ($(ARCH),arm64)
 	UBOOT_TARGET := "rpi_3"
+	UBOOT_BIN := "kernel8.img"
 else
 	UBOOT_TARGET := "rpi_3_32b"
+	UBOOT_BIN := "uboot.bin"
 endif
 
 # XXX: because of legacy reasons this is done this way but most probably we
@@ -39,7 +41,7 @@ endif
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
-	cp $(STAGEDIR)/unpack/usr/lib/u-boot/$(UBOOT_TARGET)/u-boot.bin $(DESTDIR)/boot-assets/
+	cp $(STAGEDIR)/unpack/usr/lib/u-boot/$(UBOOT_TARGET)/u-boot.bin $(DESTDIR)/boot-assets/$(UBOOT_BIN)
 	cp $(STAGEDIR)/uboot.env $(DESTDIR)
 	ln -s uboot.env $(DESTDIR)/uboot.conf
 	# boot-firmware
