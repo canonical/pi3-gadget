@@ -50,6 +50,9 @@ endif
 	done
 	# devicetrees
 	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/* $(DESTDIR)/boot-assets
+ifeq ($(ARCH),arm64)
+	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/broadcom/*.dtb $(DESTDIR)/boot-assets
+endif
 	# configs
 	cp configs/config.txt configs/cmdline.txt $(DESTDIR)/boot-assets/
 	# gadget.yaml
