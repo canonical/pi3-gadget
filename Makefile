@@ -28,11 +28,14 @@ all: clean
 	mkdir -p $(STAGEDIR)/debs $(STAGEDIR)/unpack
 	# u-boot
 	$(call stage_package,u-boot-rpi,$(STAGEDIR))
-	cp uboot.env.in $(STAGEDIR)/uboot.env.in
+	#cp uboot.env.in $(STAGEDIR)/uboot.env.in
+	cp boot.scr.in $(STAGEDIR)/boot.scr.in
 ifeq ($(ARCH),arm64)
-	sed -i s/bootz/booti/ $(STAGEDIR)/uboot.env.in
+	#sed -i s/bootz/booti/ $(STAGEDIR)/uboot.env.in
+	sed -i s/bootz/booti/ $(STAGEDIR)/boot.scr.in
 endif
-	mkenvimage -r -s 131072 -o $(STAGEDIR)/uboot.env $(STAGEDIR)/uboot.env.in
+	mkimage -A $(ARCH) -O linux -T script -C none -n "boot script" -d $(STAGEDIR)/boot.scr.in $(STAGEDIR)/boot.scr
+	#mkenvimage -r -s 131072 -o $(STAGEDIR)/uboot.env $(STAGEDIR)/uboot.env.in
 	# boot-firmware
 	$(call stage_package,raspi3-firmware,$(STAGEDIR))
 	# devicetrees
@@ -42,8 +45,9 @@ endif
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
 	cp $(STAGEDIR)/unpack/usr/lib/u-boot/$(UBOOT_TARGET)/u-boot.bin $(DESTDIR)/boot-assets/$(UBOOT_BIN)
-	cp $(STAGEDIR)/uboot.env $(DESTDIR)
-	ln -s uboot.env $(DESTDIR)/uboot.conf
+	#cp $(STAGEDIR)/uboot.env $(DESTDIR)
+	#ln -s uboot.env $(DESTDIR)/uboot.conf
+	cp $(STAGEDIR)/boot.scr $(DESTDIR)
 	# boot-firmware
 	for file in fixup start bootcode; do \
 		cp $(STAGEDIR)/unpack/usr/lib/raspi3-firmware/$${file}* $(DESTDIR)/boot-assets/; \
