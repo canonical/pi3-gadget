@@ -11,5 +11,5 @@ volumes:
         content:
           - source: boot-assets/
             target: /
-          - source: uboot.env
-            target: uboot.env
+          - source: boot.scr
+            target: boot.scr
