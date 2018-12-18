@@ -11,15 +11,9 @@ else
 	UBOOT_BIN := "uboot.bin"
 endif
 
-# XXX: because of legacy reasons this is done this way but most probably we
-#  can just use the stage_package call to get the right binaries.
-DEVTREES_PACKAGES := "http://ports.ubuntu.com/ubuntu-ports/dists/$(SERIES)-updates/universe/binary-$(ARCH)/Packages.gz"
-DEVTREES_PKGPATH := $(shell wget -q -O- $(DEVTREES_PACKAGES)|zcat|grep-dctrl linux-raspi2|grep linux-modules|grep Filename|tail -1| sed 's/^Filename: //')
-
-
 define stage_package
 	(cd $(2)/debs && apt-get download $(1);)
-	dpkg-deb --extract $(2)/debs/$(1)*.deb $(2)/unpack
+	dpkg-deb --extract $$(ls $(2)/debs/$(1)*.deb | tail -1) $(2)/unpack
 endef
 
 
@@ -28,19 +22,15 @@ all: clean
 	mkdir -p $(STAGEDIR)/debs $(STAGEDIR)/unpack
 	# u-boot
 	$(call stage_package,u-boot-rpi,$(STAGEDIR))
-	#cp uboot.env.in $(STAGEDIR)/uboot.env.in
 	cp boot.scr.in $(STAGEDIR)/boot.scr.in
 ifeq ($(ARCH),arm64)
-	#sed -i s/bootz/booti/ $(STAGEDIR)/uboot.env.in
 	sed -i s/bootz/booti/ $(STAGEDIR)/boot.scr.in
 endif
 	mkimage -A $(ARCH) -O linux -T script -C none -n "boot script" -d $(STAGEDIR)/boot.scr.in $(STAGEDIR)/boot.scr
-	#mkenvimage -r -s 131072 -o $(STAGEDIR)/uboot.env $(STAGEDIR)/uboot.env.in
 	# boot-firmware
 	$(call stage_package,raspi3-firmware,$(STAGEDIR))
 	# devicetrees
-	wget http://ports.ubuntu.com/ubuntu-ports/$(DEVTREES_PKGPATH) -P $(STAGEDIR)/debs
-	dpkg -x $(STAGEDIR)/debs/$$(basename $(DEVTREES_PKGPATH)) $(STAGEDIR)/unpack/
+	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR))
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
