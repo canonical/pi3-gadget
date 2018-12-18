@@ -6,9 +6,11 @@ SERIES ?= "bionic"
 ifeq ($(ARCH),arm64)
 	UBOOT_TARGET := "rpi_3"
 	UBOOT_BIN := "kernel8.img"
+	MKIMAGE_ARCH := "arm64"
 else
 	UBOOT_TARGET := "rpi_3_32b"
 	UBOOT_BIN := "uboot.bin"
+	MKIMAGE_ARCH := "arm"
 endif
 
 define stage_package
@@ -26,7 +28,7 @@ all: clean
 ifeq ($(ARCH),arm64)
 	sed -i s/bootz/booti/ $(STAGEDIR)/boot.scr.in
 endif
-	mkimage -A $(ARCH) -O linux -T script -C none -n "boot script" -d $(STAGEDIR)/boot.scr.in $(STAGEDIR)/boot.scr
+	mkimage -A $(MKIMAGE_ARCH) -O linux -T script -C none -n "boot script" -d $(STAGEDIR)/boot.scr.in $(STAGEDIR)/boot.scr
 	# boot-firmware
 	$(call stage_package,raspi3-firmware,$(STAGEDIR))
 	# devicetrees
@@ -35,8 +37,6 @@ endif
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
 	cp $(STAGEDIR)/unpack/usr/lib/u-boot/$(UBOOT_TARGET)/u-boot.bin $(DESTDIR)/boot-assets/$(UBOOT_BIN)
-	#cp $(STAGEDIR)/uboot.env $(DESTDIR)
-	#ln -s uboot.env $(DESTDIR)/uboot.conf
 	cp $(STAGEDIR)/boot.scr $(DESTDIR)
 	# boot-firmware
 	for file in fixup start bootcode; do \
