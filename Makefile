@@ -13,13 +13,26 @@ else
 	MKIMAGE_ARCH := "arm"
 endif
 
+SOURCES_MULTIVERSE := "/tmp/mulitverse.sources.list"
+
 define stage_package
-	(cd $(2)/debs && apt-get download $(1);)
+	(cd $(2)/debs && apt-get download -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) $(1);)
 	dpkg-deb --extract $$(ls $(2)/debs/$(1)*.deb | tail -1) $(2)/unpack
+endef
+
+define enable_multiverse
+	cp /etc/apt/sources.list $(SOURCES_MULTIVERSE)
+	sed -i "s/^\(deb.*\)\$$/\1 multiverse/" $(SOURCES_MULTIVERSE)
+	apt-get update -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) 2>/dev/null
 endef
 
 
 all: clean
+	# XXX: This is a hack that we can hopefully get rid of once. Currently
+	# the livefs Launchpad builders don't have multiverse enabled.
+	# We wanto to work-around that by actually enabling multiverse just
+	# for this one build here as we need it for raspi3-firmware.
+	$(call enable_multiverse)
 	# Preparation stage
 	mkdir -p $(STAGEDIR)/debs $(STAGEDIR)/unpack
 	# u-boot
@@ -52,6 +65,7 @@ endif
 	# gadget.yaml
 	mkdir -p $(DESTDIR)/meta
 	cp gadget.yaml $(DESTDIR)/meta/
+	rm -f $(MULTIVESE_SOURCES)
 
 clean:
 	-rm -rf $(DESTDIR)
