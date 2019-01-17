@@ -61,7 +61,8 @@ ifeq ($(ARCH),arm64)
 	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/broadcom/*.dtb $(DESTDIR)/boot-assets
 endif
 	# configs
-	cp configs/config.txt configs/cmdline.txt $(DESTDIR)/boot-assets/
+	cp configs/cmdline.txt $(DESTDIR)/boot-assets/
+	cp configs/config.txt.$(ARCH) $(DESTDIR)/boot-assets/config.txt
 	# gadget.yaml
 	mkdir -p $(DESTDIR)/meta
 	cp gadget.yaml $(DESTDIR)/meta/

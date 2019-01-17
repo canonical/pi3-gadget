@@ -1,0 +1,6 @@
+enable_uart=1
+kernel=kernel8.bin
+device_tree_address=0x03000000
+dtparam=i2c_arm=on
+dtparam=spi=on
+arm_64bit=1
