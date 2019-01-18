@@ -31,7 +31,7 @@ all: clean
 	# XXX: This is a hack that we can hopefully get rid of once. Currently
 	# the livefs Launchpad builders don't have multiverse enabled.
 	# We wanto to work-around that by actually enabling multiverse just
-	# for this one build here as we need it for raspi3-firmware.
+	# for this one build here as we need it for linux-firmware-raspi2.
 	$(call enable_multiverse)
 	# Preparation stage
 	mkdir -p $(STAGEDIR)/debs $(STAGEDIR)/unpack
@@ -43,7 +43,7 @@ ifeq ($(ARCH),arm64)
 endif
 	mkimage -A $(MKIMAGE_ARCH) -O linux -T script -C none -n "boot script" -d $(STAGEDIR)/boot.scr.in $(STAGEDIR)/boot.scr
 	# boot-firmware
-	$(call stage_package,raspi3-firmware,$(STAGEDIR))
+	$(call stage_package,linux-firmware-raspi2,$(STAGEDIR))
 	# devicetrees
 	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR))
 	# Staging stage
@@ -53,7 +53,7 @@ endif
 	cp $(STAGEDIR)/boot.scr $(DESTDIR)
 	# boot-firmware
 	for file in fixup start bootcode; do \
-		cp $(STAGEDIR)/unpack/usr/lib/raspi3-firmware/$${file}* $(DESTDIR)/boot-assets/; \
+		cp $(STAGEDIR)/unpack/usr/lib/linux-firmware-raspi2/$${file}* $(DESTDIR)/boot-assets/; \
 	done
 	# devicetrees
 	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/* $(DESTDIR)/boot-assets
