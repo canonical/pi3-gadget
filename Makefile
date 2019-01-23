@@ -13,7 +13,7 @@ else
 	MKIMAGE_ARCH := "arm"
 endif
 
-SOURCES_MULTIVERSE := "/tmp/mulitverse.sources.list"
+SOURCES_MULTIVERSE := "$(STAGEDIR)/apt/mulitverse.sources.list"
 
 define stage_package
 	(cd $(2)/debs && apt-get download -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) $(3) $(1);)
@@ -21,12 +21,13 @@ define stage_package
 endef
 
 define enable_multiverse
+	mkdir -p $(STAGEDIR)/apt
 	cp /etc/apt/sources.list $(SOURCES_MULTIVERSE)
 	sed -i "s/^\(deb.*\)\$$/\1 multiverse/" $(SOURCES_MULTIVERSE)
 	apt-get update -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) 2>/dev/null
 endef
 
-define workaround_missing_dtbs
+define workaround_missing_arm64_dtbs
 	mkdir -p $(STAGEDIR)/armhf/debs
 	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR)/armhf,-oAPT::Architecture=armhf)
 	cp $(STAGEDIR)/armhf/unpack/lib/firmware/*/device-tree/bcm2710-rpi-cm3.dtb \
@@ -57,7 +58,7 @@ endif
 	# does not ship the CM3 dtb. Until this is fixed, we can use the armhf
 	# one as it is usable.
 ifeq ($(ARCH),arm64)
-	$(call workaround_missing_dtbs)
+	$(call workaround_missing_arm64_dtbs)
 endif
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
@@ -79,7 +80,6 @@ endif
 	# gadget.yaml
 	mkdir -p $(DESTDIR)/meta
 	cp gadget.yaml $(DESTDIR)/meta/
-	rm -f $(SOURCES_MULTIVERSE)
 
 clean:
 	-rm -rf $(DESTDIR)
