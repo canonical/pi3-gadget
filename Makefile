@@ -16,7 +16,7 @@ endif
 SOURCES_MULTIVERSE := "/tmp/mulitverse.sources.list"
 
 define stage_package
-	(cd $(2)/debs && apt-get download -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) $(1);)
+	(cd $(2)/debs && apt-get download -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) $(3) $(1);)
 	dpkg-deb --extract $$(ls $(2)/debs/$(1)*.deb | tail -1) $(2)/unpack
 endef
 
@@ -24,6 +24,13 @@ define enable_multiverse
 	cp /etc/apt/sources.list $(SOURCES_MULTIVERSE)
 	sed -i "s/^\(deb.*\)\$$/\1 multiverse/" $(SOURCES_MULTIVERSE)
 	apt-get update -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) 2>/dev/null
+endef
+
+define workaround_missing_dtbs
+	mkdir -p $(STAGEDIR)/armhf/debs
+	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR)/armhf,-oAPT::Architecture=armhf)
+	cp $(STAGEDIR)/armhf/unpack/lib/firmware/*/device-tree/bcm2710-rpi-cm3.dtb \
+		$(STAGEDIR)/unpack/lib/firmware/*/device-tree/
 endef
 
 
@@ -46,6 +53,12 @@ endif
 	$(call stage_package,linux-firmware-raspi2,$(STAGEDIR))
 	# devicetrees
 	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR))
+	# XXX: Another temporary hack. The current linux-raspi2 arm64 kernel
+	# does not ship the CM3 dtb. Until this is fixed, we can use the armhf
+	# one as it is usable.
+ifeq ($(ARCH),arm64)
+	$(call workaround_missing_dtbs)
+endif
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
@@ -66,7 +79,7 @@ endif
 	# gadget.yaml
 	mkdir -p $(DESTDIR)/meta
 	cp gadget.yaml $(DESTDIR)/meta/
-	rm -f $(MULTIVESE_SOURCES)
+	rm -f $(SOURCES_MULTIVERSE)
 
 clean:
 	-rm -rf $(DESTDIR)
