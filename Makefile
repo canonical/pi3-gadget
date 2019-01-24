@@ -29,6 +29,7 @@ endef
 
 define workaround_missing_arm64_dtbs
 	mkdir -p $(STAGEDIR)/armhf/debs
+	apt-get update -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) -oAPT::Architecture=armhf 2>/dev/null
 	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR)/armhf,-oAPT::Architecture=armhf)
 	cp $(STAGEDIR)/armhf/unpack/lib/firmware/*/device-tree/bcm2710-rpi-cm3.dtb \
 		$(STAGEDIR)/unpack/lib/firmware/*/device-tree/
