@@ -1,7 +1,7 @@
 STAGEDIR := "$(CURDIR)/stage"
 DESTDIR := "$(CURDIR)/install"
 
-ARCH ?= "armhf"
+ARCH ?= $(shell dpkg --print-architecture)
 SERIES ?= "bionic"
 ifeq ($(ARCH),arm64)
 	UBOOT_TARGET := "rpi_3"
