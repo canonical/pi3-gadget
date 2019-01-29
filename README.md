@@ -1,4 +1,4 @@
-# Raspberry Pi 3 Gadget Snap
+# Raspberry Pi 3 Gadget Tree
 
 This repository contains the source for an Ubuntu classic gadget tree for the Raspberry Pi 3.
 
