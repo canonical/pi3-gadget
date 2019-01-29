@@ -6,12 +6,21 @@ description: |
 type: gadget
 architectures:
   - armhf
+  - arm64
 confinement: strict
 grade: stable
 parts:
   gadget:
     source: .
-    plugin: make
+    plugin: nil
+    override-build: |
+      if [ "$(arch)" = "x86_64" ]; then
+        echo "Cross-compilation detected, using pre-defined sources.list."
+        OPTIONAL_ARGUMENTS="SOURCES_HOST=\"./helpers/sources.list.cross\""
+      fi
+      make ARCH=$(dpkg-architecture -t$SNAPCRAFT_ARCH_TRIPLET -qDEB_HOST_ARCH) \
+        ${OPTIONAL_ARGUMENTS:-}
+      cp -a install/* $SNAPCRAFT_PART_INSTALL/
     prime:
       - boot-assets/*
       - uboot*
