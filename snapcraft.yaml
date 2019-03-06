@@ -1,5 +1,5 @@
 name: pi3
-version: 18-1
+version: 18-2
 summary: Raspberry Pi 3 support package
 description: |
  Support files for booting Raspberry Pi
