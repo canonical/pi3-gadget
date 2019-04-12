@@ -84,6 +84,9 @@ endif
 	# configs
 	cp configs/cmdline.txt $(DESTDIR)/boot-assets/
 	cp configs/config.txt.$(ARCH) $(DESTDIR)/boot-assets/config.txt
+	cp configs/user-data* $(DESTDIR)/boot-assets/
+	cp configs/meta-data* $(DESTDIR)/boot-assets/
+	cp configs/network-config* $(DESTDIR)/boot-assets/
 	# gadget.yaml
 	mkdir -p $(DESTDIR)/meta
 	cp gadget.yaml $(DESTDIR)/meta/
