@@ -14,7 +14,7 @@ else
 endif
 
 SOURCES_HOST ?= "/etc/apt/sources.list"
-SOURCES_MULTIVERSE := "$(STAGEDIR)/apt/mulitverse.sources.list"
+SOURCES_MULTIVERSE := "$(STAGEDIR)/apt/multiverse.sources.list"
 
 define stage_package
 	(cd $(2)/debs && apt-get download -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) -oAPT::Architecture=$(3) $(1);)
@@ -26,14 +26,6 @@ define enable_multiverse
 	cp $(SOURCES_HOST) $(SOURCES_MULTIVERSE)
 	sed -i "s/^\(deb.*\)\$$/\1 multiverse/" $(SOURCES_MULTIVERSE)
 	apt-get update -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) -oAPT::Architecture=$(ARCH) 2>/dev/null
-endef
-
-define workaround_missing_arm64_dtbs
-	mkdir -p $(STAGEDIR)/armhf/debs
-	apt-get update -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) -oAPT::Architecture=armhf 2>/dev/null
-	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR)/armhf,armhf)
-	cp $(STAGEDIR)/armhf/unpack/lib/firmware/*/device-tree/bcm2710-rpi-cm3.dtb \
-		$(STAGEDIR)/unpack/lib/firmware/*/device-tree/
 endef
 
 
@@ -61,12 +53,6 @@ endif
 	$(call stage_package,linux-firmware-raspi2,$(STAGEDIR),$(ARCH))
 	# devicetrees
 	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR),$(ARCH))
-	# XXX: Another temporary hack. The current linux-raspi2 arm64 kernel
-	# does not ship the CM3 dtb. Until this is fixed, we can use the armhf
-	# one as it is usable.
-ifeq ($(ARCH),arm64)
-	$(call workaround_missing_arm64_dtbs)
-endif
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
