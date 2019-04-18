@@ -17,7 +17,14 @@ SOURCES_HOST ?= "/etc/apt/sources.list"
 SOURCES_MULTIVERSE := "$(STAGEDIR)/apt/multiverse.sources.list"
 
 define stage_package
-	(cd $(2)/debs && apt-get download -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) -oAPT::Architecture=$(3) $(1);)
+	( \
+		cd $(2)/debs && \
+		apt-get download -o APT::Architecture=$(3) $$( \
+			apt-cache -o APT::Architecture=$(3) showpkg $(1) | \
+				grep "^Package:" | sed -e 's/^Package: *//' | \
+				sort -V | tail -1 \
+		); \
+	)
 	dpkg-deb --extract $$(ls $(2)/debs/$(1)*.deb | tail -1) $(2)/unpack
 endef
 
@@ -25,7 +32,9 @@ define enable_multiverse
 	mkdir -p $(STAGEDIR)/apt
 	cp $(SOURCES_HOST) $(SOURCES_MULTIVERSE)
 	sed -i "s/^\(deb.*\)\$$/\1 multiverse/" $(SOURCES_MULTIVERSE)
-	apt-get update -o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) -oAPT::Architecture=$(ARCH) 2>/dev/null
+	apt-get update \
+		-o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) \
+		-o APT::Architecture=$(ARCH) 2>/dev/null
 endef
 
 
