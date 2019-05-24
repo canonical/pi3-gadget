@@ -24,3 +24,4 @@ parts:
     prime:
       - boot-assets/*
       - uboot*
+      - boot.scr
