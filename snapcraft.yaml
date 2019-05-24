@@ -12,7 +12,7 @@ parts:
   uboot:
     plugin: nil
     source: git://git.denx.de/u-boot.git
-    source-branch: v2017.05
+    source-branch: v2019.04
     prepare: |
       git apply ../../../uboot.patch
       make rpi_3_32b_defconfig
