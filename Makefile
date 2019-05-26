@@ -19,11 +19,7 @@ SOURCES_MULTIVERSE := "$(STAGEDIR)/apt/multiverse.sources.list"
 define stage_package
 	( \
 		cd $(2)/debs && \
-		apt-get download -o APT::Architecture=$(3) $$( \
-			apt-cache -o APT::Architecture=$(3) showpkg $(1) | \
-				sed -n -e 's/^Package: *//p' | \
-				sort -V | tail -1 \
-		); \
+		apt-get download -o APT::Architecture=$(3) $(1); \
 	)
 	dpkg-deb --extract $$(ls $(2)/debs/$(1)*.deb | tail -1) $(2)/unpack
 endef
