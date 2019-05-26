@@ -21,7 +21,7 @@ define stage_package
 		cd $(2)/debs && \
 		apt-get download -o APT::Architecture=$(3) $$( \
 			apt-cache -o APT::Architecture=$(3) showpkg $(1) | \
-				grep "^Package:" | sed -e 's/^Package: *//' | \
+				sed -n -e 's/^Package: *//p' | \
 				sort -V | tail -1 \
 		); \
 	)
