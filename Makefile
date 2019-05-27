@@ -21,7 +21,7 @@ define stage_package
 		cd $(2)/debs && \
 		apt-get download \
 			-o APT::Architecture=$(3) \
-			-o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) \$$( \
+			-o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) $$( \
 				apt-cache \
 					-o APT::Architecture=$(3) \
 					-o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) \
