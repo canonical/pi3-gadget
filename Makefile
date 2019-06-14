@@ -26,7 +26,7 @@ define stage_package
 					-o APT::Architecture=$(3) \
 					-o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) \
 					showpkg $(1) | \
-					grep "^Package:" | sed -e 's/^Package: *//' | \
+					sed -n -e 's/^Package: *//p' | \
 					sort -V | tail -1 \
 		); \
 	)
