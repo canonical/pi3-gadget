@@ -43,7 +43,7 @@ parts:
     after:
       - uboot
     prepare: |
-      git clone --depth=1 https://github.com/raspberrypi/firmware.git -b "1.20180919"
+      git clone --depth=1 https://github.com/raspberrypi/firmware.git -b "1.20190709"
     install: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/boot-assets
       for file in fixup start bootcode LICENCE COPYING; do
