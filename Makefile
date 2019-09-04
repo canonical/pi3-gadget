@@ -82,11 +82,12 @@ ifeq ($(ARCH),arm64)
 	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/broadcom/*.dtb $(DESTDIR)/boot-assets
 endif
 	# configs
-	cp configs/cmdline.txt $(DESTDIR)/boot-assets/
+	cp configs/*.txt $(DESTDIR)/boot-assets/
 	cp configs/config.txt.$(ARCH) $(DESTDIR)/boot-assets/config.txt
-	cp configs/user-data* $(DESTDIR)/boot-assets/
-	cp configs/meta-data* $(DESTDIR)/boot-assets/
-	cp configs/network-config* $(DESTDIR)/boot-assets/
+	cp configs/user-data $(DESTDIR)/boot-assets/
+	cp configs/meta-data $(DESTDIR)/boot-assets/
+	cp configs/network-config $(DESTDIR)/boot-assets/
+	cp configs/README $(DESTDIR)/boot-assets/
 	# gadget.yaml
 	mkdir -p $(DESTDIR)/meta
 	cp gadget.yaml $(DESTDIR)/meta/
