@@ -4,12 +4,8 @@ DESTDIR := "$(CURDIR)/install"
 ARCH ?= $(shell dpkg --print-architecture)
 SERIES ?= "bionic"
 ifeq ($(ARCH),arm64)
-	UBOOT_TARGET := "rpi_3"
-	UBOOT_BIN := "kernel8.img"
 	MKIMAGE_ARCH := "arm64"
 else
-	UBOOT_TARGET := "rpi_3_32b"
-	UBOOT_BIN := "uboot.bin"
 	MKIMAGE_ARCH := "arm"
 endif
 
@@ -70,7 +66,9 @@ endif
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
-	cp $(STAGEDIR)/unpack/usr/lib/u-boot/$(UBOOT_TARGET)/u-boot.bin $(DESTDIR)/boot-assets/$(UBOOT_BIN)
+	for platform_path in $(STAGEDIR)/unpack/usr/lib/u-boot/*; do \
+		cp $$platform_path/u-boot.bin $(DESTDIR)/boot-assets/uboot_$${platform_path##*/}.bin; \
+	done
 	cp $(STAGEDIR)/boot.scr $(DESTDIR)
 	# boot-firmware
 	for file in fixup start bootcode; do \
