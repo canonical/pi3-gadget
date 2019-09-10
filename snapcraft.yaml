@@ -23,5 +23,3 @@ parts:
       cp -a install/* $SNAPCRAFT_PART_INSTALL/
     prime:
       - boot-assets/*
-      - uboot*
-      - boot.scr
