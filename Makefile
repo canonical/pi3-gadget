@@ -53,17 +53,20 @@ all: clean
 	# Preparation stage
 	mkdir -p $(STAGEDIR)/debs $(STAGEDIR)/unpack
 	# u-boot
+	$(call stage_package,flash-kernel,$(STAGEDIR),$(ARCH))
 	$(call stage_package,u-boot-rpi,$(STAGEDIR),$(ARCH))
 	cp boot.scr.in $(STAGEDIR)/boot.scr.in
 ifeq ($(ARCH),arm64)
 	sed -i s/bootz/booti/ $(STAGEDIR)/boot.scr.in
 endif
-	mkimage -A $(MKIMAGE_ARCH) -O linux -T script -C none -n "boot script" -d $(STAGEDIR)/boot.scr.in $(STAGEDIR)/boot.scr
 	# boot-firmware
 	$(call stage_package,linux-firmware-raspi2,$(STAGEDIR),$(ARCH))
 	# devicetrees
 	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR),$(ARCH))
 	# Staging stage
+	mkimage -A $(MKIMAGE_ARCH) -O linux -T script -C none -n "boot script" \
+		-d $(STAGEDIR)/unpack/etc/flash-kernel/bootscript/bootscr.rpi* \
+		$(STAGEDIR)/boot.scr
 	mkdir -p $(DESTDIR)/boot-assets
 	# u-boot
 	for platform_path in $(STAGEDIR)/unpack/usr/lib/u-boot/*; do \
