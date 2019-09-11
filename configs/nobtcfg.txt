@@ -8,4 +8,4 @@
 
 enable_uart=1
 cmdline=nobtcmd.txt
-dtoverlay=pi3-disable-bt
+#dtoverlay=pi3-disable-bt
