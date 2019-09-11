@@ -9,6 +9,7 @@ else
 	MKIMAGE_ARCH := "arm"
 endif
 
+SERIES_HOST ?= $(shell lsb_release --codename --short)
 SOURCES_HOST ?= "/etc/apt/sources.list"
 SOURCES_MULTIVERSE := "$(STAGEDIR)/apt/multiverse.sources.list"
 
@@ -32,7 +33,8 @@ endef
 define enable_multiverse
 	mkdir -p $(STAGEDIR)/apt
 	cp $(SOURCES_HOST) $(SOURCES_MULTIVERSE)
-	sed -i "s/^\(deb.*\)\$$/\1 multiverse/" $(SOURCES_MULTIVERSE)
+	sed -i "/^deb/ s/\b$(SERIES_HOST)/$(SERIES)/" $(SOURCES_MULTIVERSE)
+	sed -i "/^deb/ s/$$/ multiverse/" $(SOURCES_MULTIVERSE)
 	apt-get update \
 		-o Dir::Etc::sourcelist=$(SOURCES_MULTIVERSE) \
 		-o APT::Architecture=$(ARCH) 2>/dev/null
