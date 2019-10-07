@@ -12,6 +12,7 @@
 
 [pi4]
 kernel=uboot_rpi_4.bin
+dtoverlay=vc4-fkms-v3d
 max_framebuffers=2
 
 [pi2]
