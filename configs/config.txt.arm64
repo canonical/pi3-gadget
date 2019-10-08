@@ -12,7 +12,6 @@
 
 [pi4]
 kernel=uboot_rpi_4.bin
-dtoverlay=vc4-fkms-v3d
 max_framebuffers=2
 
 [pi2]
@@ -24,6 +23,7 @@ kernel=uboot_rpi_3.bin
 [all]
 arm_64bit=1
 device_tree_address=0x03000000
+dtoverlay=vc4-fkms-v3d
 
 # The following settings are "defaults" expected to be overridden by the
 # included configuration. The only reason they are included is, again, to
