@@ -22,7 +22,6 @@ kernel=uboot_rpi_3_32b.bin
 
 [all]
 device_tree_address=0x03000000
-dtoverlay=vc4-fkms-v3d
 
 # The following settings are "defaults" expected to be overridden by the
 # included configuration. The only reason they are included is, again, to

@@ -62,9 +62,21 @@ all: clean
 
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
+	# NOTE: the bootscr.rpi* below is deliberate; older flash-kernels have
+	# separate bootscr.rpi? files for different pis, while newer have a
+	# single generic bootscr.rpi file
+	for kvers in $(STAGEDIR)/unpack/lib/modules/*; do \
+		sed \
+			-e "s/@@KERNEL_VERSION@@/$${kvers##*/}/g" \
+			-e "s/@@LINUX_KERNEL_CMDLINE@@/quiet splash/g" \
+			-e "s/@@LINUX_KERNEL_CMDLINE_DEFAULTS@@//g" \
+			-e "s/@@UBOOT_ENV_EXTRA@@//g" \
+			-e "s/@@UBOOT_PREBOOT_EXTRA@@//g" \
+			$(STAGEDIR)/unpack/etc/flash-kernel/bootscript/bootscr.rpi* \
+			> $(STAGEDIR)/unpack/bootscr.rpi; \
+	done
 	mkimage -A $(MKIMAGE_ARCH) -O linux -T script -C none -n "boot script" \
-		-d $(STAGEDIR)/unpack/etc/flash-kernel/bootscript/bootscr.rpi* \
-		$(DESTDIR)/boot-assets/boot.scr
+		-d $(STAGEDIR)/unpack/bootscr.rpi $(DESTDIR)/boot-assets/boot.scr
 	for platform_path in $(STAGEDIR)/unpack/usr/lib/u-boot/*; do \
 		cp -a $$platform_path/u-boot.bin \
 			$(DESTDIR)/boot-assets/uboot_$${platform_path##*/}.bin; \
@@ -73,12 +85,11 @@ all: clean
 		cp -a $(STAGEDIR)/unpack/usr/lib/linux-firmware-raspi2/$${file}* \
 			$(DESTDIR)/boot-assets/; \
 	done
-	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/* \
-		$(DESTDIR)/boot-assets
-ifeq ($(ARCH),arm64)
-	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/broadcom/*.dtb \
-		$(DESTDIR)/boot-assets
-endif
+	cp -a $$(find $(STAGEDIR)/unpack/lib/firmware/*/device-tree -name "*.dtb") \
+		$(DESTDIR)/boot-assets/
+	mkdir -p $(DESTDIR)/boot-assets/overlays
+	cp -a $$(find $(STAGEDIR)/unpack/lib/firmware/*/device-tree -name "*.dtbo") \
+		$(DESTDIR)/boot-assets/overlays/
 	cp -a configs/*.txt $(DESTDIR)/boot-assets/
 	cp -a configs/config.txt.$(ARCH) $(DESTDIR)/boot-assets/config.txt
 	cp -a configs/user-data $(DESTDIR)/boot-assets/
