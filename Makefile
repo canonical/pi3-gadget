@@ -73,12 +73,11 @@ all: clean
 		cp -a $(STAGEDIR)/unpack/usr/lib/linux-firmware-raspi2/$${file}* \
 			$(DESTDIR)/boot-assets/; \
 	done
-	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/* \
-		$(DESTDIR)/boot-assets
-ifeq ($(ARCH),arm64)
-	cp -a $(STAGEDIR)/unpack/lib/firmware/*/device-tree/broadcom/*.dtb \
-		$(DESTDIR)/boot-assets
-endif
+	cp -a $$(find $(STAGEDIR)/unpack/lib/firmware/*/device-tree -name "*.dtb") \
+		$(DESTDIR)/boot-assets/
+	mkdir -p $(DESTDIR)/boot-assets/overlays
+	cp -a $$(find $(STAGEDIR)/unpack/lib/firmware/*/device-tree -name "*.dtbo") \
+		$(DESTDIR)/boot-assets/overlays/
 	cp -a configs/*.txt $(DESTDIR)/boot-assets/
 	cp -a configs/config.txt.$(ARCH) $(DESTDIR)/boot-assets/config.txt
 	cp -a configs/user-data $(DESTDIR)/boot-assets/
