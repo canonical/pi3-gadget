@@ -62,9 +62,21 @@ all: clean
 
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
+	# NOTE: the bootscr.rpi* below is deliberate; older flash-kernels have
+	# separate bootscr.rpi? files for different pis, while newer have a
+	# single generic bootscr.rpi file
+	for kvers in $(STAGEDIR)/unpack/lib/modules/*; do \
+		sed \
+			-e "s/@@KERNEL_VERSION@@/$${kvers##*/}/g" \
+			-e "s/@@LINUX_KERNEL_CMDLINE@@/quiet splash/g" \
+			-e "s/@@LINUX_KERNEL_CMDLINE_DEFAULTS@@//g" \
+			-e "s/@@UBOOT_ENV_EXTRA@@//g" \
+			-e "s/@@UBOOT_PREBOOT_EXTRA@@//g" \
+			$(STAGEDIR)/unpack/etc/flash-kernel/bootscript/bootscr.rpi* \
+			> $(STAGEDIR)/unpack/bootscr.rpi; \
+	done
 	mkimage -A $(MKIMAGE_ARCH) -O linux -T script -C none -n "boot script" \
-		-d $(STAGEDIR)/unpack/etc/flash-kernel/bootscript/bootscr.rpi* \
-		$(DESTDIR)/boot-assets/boot.scr
+		-d $(STAGEDIR)/unpack/bootscr.rpi $(DESTDIR)/boot-assets/boot.scr
 	for platform_path in $(STAGEDIR)/unpack/usr/lib/u-boot/*; do \
 		cp -a $$platform_path/u-boot.bin \
 			$(DESTDIR)/boot-assets/uboot_$${platform_path##*/}.bin; \
