@@ -68,7 +68,7 @@ all: clean
 	for kvers in $(STAGEDIR)/unpack/lib/modules/*; do \
 		sed \
 			-e "s/@@KERNEL_VERSION@@/$${kvers##*/}/g" \
-			-e "s/@@LINUX_KERNEL_CMDLINE@@//g" \
+			-e "s/@@LINUX_KERNEL_CMDLINE@@/quiet splash/g" \
 			-e "s/@@LINUX_KERNEL_CMDLINE_DEFAULTS@@//g" \
 			-e "s/@@UBOOT_ENV_EXTRA@@//g" \
 			-e "s/@@UBOOT_PREBOOT_EXTRA@@//g" \
