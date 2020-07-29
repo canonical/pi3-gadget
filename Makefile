@@ -58,7 +58,7 @@ all: clean
 	$(call stage_package,flash-kernel,$(STAGEDIR),$(ARCH))
 	$(call stage_package,u-boot-rpi,$(STAGEDIR),$(ARCH))
 	$(call stage_package,linux-firmware-raspi2,$(STAGEDIR),$(ARCH))
-	$(call stage_package,linux-modules-*-raspi2,$(STAGEDIR),$(ARCH))
+	$(call stage_package,linux-modules-*-raspi,$(STAGEDIR),$(ARCH))
 
 	# Staging stage
 	mkdir -p $(DESTDIR)/boot-assets
